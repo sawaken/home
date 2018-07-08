@@ -1,0 +1,21 @@
+---
+- tags: roles/common/cifs
+  become: true
+  block:
+    - name: install cifs module
+      apt:
+        name: cifs-utils
+
+    - name: create mount position
+      with_items: "{{ roles.cifs.mounts }}"
+      file: path={{ item.path }} state=directory owner={{ item.uid }} group={{ item.gid }} mode=0755
+
+    - name: mount cifs (接続先が未構築の場合はエラーになるのでその場合は無視する)
+      ignore_errors: true
+      with_items: "{{ roles.cifs.mounts }}"
+      mount:
+        path: "{{ item.path }}"
+        src: "{{ item.src }}"
+        opts: "vers=3.0,uid={{ item.uid }},gid={{ item.gid }},username={{ roles.cifs.username }},password={{ roles.cifs.password }}"
+        fstype: cifs
+        state: mounted

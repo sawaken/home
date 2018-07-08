@@ -1,0 +1,26 @@
+- hosts: client-local-main
+  gather_facts: yes
+  vars_files:
+    - ../vars/encrypted.yml
+    - ../vars/common.yml
+  roles:
+    - common/dotfiles
+    - common/anyenv
+    - common/docker
+    - common/sudoers
+    - common/tmux
+    - common/vim
+    - common/zsh
+    - common/dropbox
+    - common/hosts
+    - common/cifs
+    - application/client-local-main
+
+- hosts: windows-local-main01
+  gather_facts: yes
+  vars_files:
+    - ../vars/encrypted.yml
+    - ../vars/common.yml
+  roles:
+    - common/hosts
+    - application/windows-local-main

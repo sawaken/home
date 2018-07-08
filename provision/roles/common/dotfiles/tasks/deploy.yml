@@ -1,0 +1,17 @@
+- package:
+    name: rake
+    state: present
+  become: true
+
+- shell: "rake {{ item }}"
+  become: true
+  become_user: "{{ clone_dotfile.item.user_name }}"
+  args:
+    chdir: "{{ clone_dotfile.item.dest }}"
+  with_items: "{{ clone_dotfile.item.rake_tasks }}"
+
+- package:
+    name: rake
+    state: absent
+  become: true
+

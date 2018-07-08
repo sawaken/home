@@ -1,0 +1,4 @@
+roles:
+  zsh:
+    user_names:
+      - "{{ global.common.owner_user_name }}"

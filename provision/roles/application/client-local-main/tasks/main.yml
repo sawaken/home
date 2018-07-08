@@ -1,0 +1,16 @@
+---
+- tags: roles/application/client-local-main
+  become: true
+  block:
+    - name: set timezone to Asia/Tokyo
+      timezone:
+        name: Asia/Tokyo
+
+    - name: set hostname
+      hostname:
+        name: "{{ inventory_hostname }}"
+
+    - name: put ansible vault pass file
+      template:
+        src: templates/vault_pass.txt.j2
+        dest: /etc/ansible/vault_pass.txt

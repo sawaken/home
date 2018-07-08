@@ -1,0 +1,13 @@
+---
+- tags: roles/common/zsh
+  become: true
+  block:
+    - name: install zsh
+      apt:
+        name: zsh
+
+    - name: set login shell to zsh
+      with_items: "{{ roles.zsh.user_names }}"
+      user:
+        name: "{{ item }}"
+        shell: /bin/zsh

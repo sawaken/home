@@ -1,0 +1,14 @@
+---
+- tags: roles/common/dotfiles
+  block:
+    - name: clone dotfiles
+      become: true
+      become_user: "{{ item.user_name }}"
+      become_method: su
+      with_items: "{{ roles.dotfiles }}"
+      notify: link dotfiles
+      register: clone_dotfiles_all
+      git:
+        repo: "{{ item.repository }}"
+        dest: "{{ item.dest }}"
+        update: yes

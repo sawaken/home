@@ -1,0 +1,15 @@
+---
+- tags: roles/common/hosts
+  block:
+    - name: puts /etc/hosts
+      become: true
+      when: "ansible_os_family != 'Windows'"
+      template:
+        src: templates/hosts.j2
+        dest: /etc/hosts
+
+    - name: puts hosts to windows
+      when: "ansible_os_family == 'Windows'"
+      win_template:
+        src: templates/hosts.j2
+        dest: C:\Windows\System32\drivers\etc\hosts

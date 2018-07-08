@@ -1,0 +1,35 @@
+VAGRANT_CONFIGURE_VERSION = '2'
+
+def require_plugin(plugin)
+  system "vagrant plugin install #{plugin}" unless Vagrant.has_plugin? plugin
+end
+
+require_plugin 'vagrant-vbguest'
+require_plugin 'vagrant-disksize'
+require_plugin 'vagrant-digitalocean'
+
+Vagrant.configure(VAGRANT_CONFIGURE_VERSION) do |config|
+  config.vm.define 'client-local-main01' do |machine|
+    machine.vm.box = "ubuntu16.04"
+    machine.vm.box_url = 'https://atlas.hashicorp.com/bento/boxes/ubuntu-16.04'
+    machine.vm.network :private_network, ip:"192.168.33.10"
+    machine.vm.synced_folder "../", "/var/data/home"
+    machine.disksize.size = '50GB' # needs vagrant-disksize plugin
+
+    machine.vm.provider 'virtualbox' do |vb|
+      vb.customize ["modifyvm", :id,
+        "--memory", 4096,
+        "--cpus", "2",
+        "--ioapic", "on",
+        "--natdnspassdomain1", "off",
+        "--natdnshostresolver1", "on"]
+      vb.name = "client-local-main01"
+    end
+
+    machine.vm.provision 'ansible_local' do |ansible|
+      ansible.playbook = 'playbooks/construct.yml'
+      ansible.install_mode = 'pip'
+      ansible.version = '2.4.3'
+    end
+  end
+end

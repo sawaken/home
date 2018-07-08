@@ -1,0 +1,9 @@
+roles:
+  cifs:
+    username: "{{ global.common.win_local_file_share_uesr_name }}"
+    password: "{{ global.encrypted.windows_local_main01_file_share_user_password }}"
+    mounts:
+      - path: "/home/{{ global.common.owner_user_name }}/win_shared"
+        src: \\windows-local-main01\shared
+        uid: 1000
+        gid: 1000

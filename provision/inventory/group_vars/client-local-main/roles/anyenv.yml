@@ -1,0 +1,26 @@
+roles:
+  anyenv:
+    rbenv:
+      global_version: 2.3.6
+      versions:
+        - 2.4.1
+        - 2.3.6
+      gems:
+        - { name: rubocop, version: 0.40.0 }
+        - { name: bundle }
+        - { name: pry }
+    pyenv:
+      global_version_v2: 2.7.12
+      global_version_v3: 3.5.1
+      versions:
+        - 3.6.5
+        - 3.5.1
+        - 2.7.12
+        - 2.7.15
+      pips_v2:
+        - { name: ansible, version: 2.4.3 }
+        - { name: pywinrm, version: 0.3.0 }
+      pips_v3: []
+
+
+

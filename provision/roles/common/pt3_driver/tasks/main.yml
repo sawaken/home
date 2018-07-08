@@ -1,0 +1,25 @@
+---
+- tags: roles/common/pt3_driver
+  become: true
+  block:
+    - name:
+      become: yes
+      lineinfile:
+        path: /etc/modprobe.d/blacklist.conf
+        line: "blacklist earth_pt3"
+
+    - name: clone source repository
+      git:
+        repo: "https://github.com/m-tsudo/pt3.git"
+        dest: /tmp/pt3
+
+    - name: build pt3 driver
+      make:
+        chdir: /tmp/pt3
+
+    - name: install pt3 driver
+      become: yes
+      make:
+        chdir: /tmp/pt3
+        target: install
+

@@ -1,0 +1,12 @@
+- name: dropboxd インストール
+  shell: cd ~ && wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf -
+  args:
+    creates: ~/.dropbox-dist
+
+- name: 管理ツールをインストール
+  get_url:
+     url: https://www.dropbox.com/download?dl=packages/dropbox.py
+     dest: /usr/local/bin/dropbox.py
+     mode: 0755
+
+# dropbox.py start で開始する

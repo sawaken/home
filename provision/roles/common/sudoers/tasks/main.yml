@@ -1,0 +1,30 @@
+---
+- tags: roles/common/sudoers
+  become: true
+  block:
+    - name: make wheel group
+      group:
+        name: wheel
+        state: present
+
+    - name: put users in wheel group
+      with_items: "{{ roles.sudoers.user_names }}"
+      user:
+        name: "{{ item }}"
+        groups: wheel
+        append: yes
+
+    - name: Allow 'wheel' group to have passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        validate: visudo -cf %s
+
+    # sudoした際にもssh-agentセッションを引き継ぐ
+    - name: allow agentforward sudo
+      lineinfile:
+        dest: /etc/sudoers
+        line: "Defaults env_keep += \"SSH_AUTH_SOCK\""
+        state: present

@@ -1,0 +1,33 @@
+---
+- tags: roles/anyenv/rbenv
+  block:
+    - name: install rbenv
+      shell: bash -lc 'anyenv install rbenv'
+      args:
+        creates: ~/.anyenv/envs/rbenv
+
+    - name: "install ruby versions into rbenv"
+      shell: "bash -lc 'rbenv install {{ item }}'"
+      args:
+        creates: "~/.anyenv/envs/rbenv/versions/{{ item }}"
+      notify: rbenv rehash
+      with_items: "{{ roles.anyenv.rbenv.versions }}"
+
+    - name: check current rbenv global version
+      shell: "bash -lc 'rbenv global'"
+      register: rbenv_current_global_version
+      changed_when: false
+
+    - name: set rbenv global version
+      shell: "bash -lc 'rbenv global {{ roles.anyenv.rbenv.global_version }}'"
+      changed_when: rbenv_current_global_version.stdout != roles.anyenv.rbenv.global_version
+      notify: rbenv rehash
+
+    - name: install gems into global ruby
+      gem:
+        name: "{{ item.name }}"
+        version: "{{ item.version|default() }}"
+        user_install: no
+        executable: ~/.anyenv/envs/rbenv/shims/gem
+      with_items: "{{ roles.anyenv.rbenv.gems }}"
+      notify: rbenv rehash

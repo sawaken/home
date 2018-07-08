@@ -1,0 +1,53 @@
+---
+- tags: roles/common/docker
+  become: true
+  block:
+    - name: add apt-key for docker-repo
+      apt_key:
+        id: 0EBFCD88
+        url: https://download.docker.com/linux/ubuntu/gpg
+
+    - name: add docker repo
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+
+    - name: install docker
+      become: true
+      apt:
+        name: docker-ce
+        update-cache: yes
+
+    - name: register docker service
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: make docker group
+      group:
+        name: docker
+        state: present
+
+    - name: put users in docker group
+      notify: restart docker
+      with_items: "{{ roles.docker.user_names }}"
+      user:
+        name: "{{ item }}"
+        groups: docker
+        append: yes
+
+    - name: register uname -s
+      shell: uname -s
+      changed_when: false
+      register: uname_s_result
+
+    - name: register unsme -m
+      shell: uname -m
+      changed_when: false
+      register: uname_m_result
+
+    - name: install docker-compose
+      get_url:
+        url: https://github.com/docker/compose/releases/download/1.17.0/docker-compose-{{ uname_s_result.stdout }}-{{ uname_m_result.stdout }}
+        dest: /usr/local/bin/docker-compose
+        mode: 0755

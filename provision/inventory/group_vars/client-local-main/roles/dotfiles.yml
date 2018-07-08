@@ -1,0 +1,9 @@
+roles:
+  dotfiles:
+    - user_name: "{{ global.common.owner_user_name }}"
+      repository: https://github.com/sawaken/dotfiles
+      dest: ~/dotfiles
+      rake_tasks:
+        - link-force
+        - install-vundle
+        - install-tpm

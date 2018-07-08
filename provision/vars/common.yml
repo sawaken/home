@@ -1,0 +1,4 @@
+global:
+  common:
+    owner_user_name: owner
+    win_local_file_share_uesr_name: local_file_share

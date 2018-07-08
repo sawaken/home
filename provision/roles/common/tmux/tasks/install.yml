@@ -1,0 +1,35 @@
+---
+- name: install tmux from source
+  block:
+    - name: clone git repository of tmux
+      git:
+        repo: https://github.com/tmux/tmux.git
+        dest: /usr/local/src/tmux
+        version: "{{ roles.tmux.version }}"
+
+    - name: install dependent packages to build tmux
+      apt: name={{item}} state=installed
+      when: "ansible_os_family == 'Debian'"
+      with_items:
+       - automake
+       - libevent-dev
+       - libncurses5-dev
+       - xsel
+       - pkg-config
+
+    - name: prepare build of tmux
+      shell: |
+        sh autogen.sh
+        ./configure
+      args:
+        chdir: /usr/local/src/tmux
+        creates: /usr/local/src/tmux/Makefile
+
+    - name: build tmux
+      make:
+        chdir: /usr/local/src/tmux
+
+    - name: install tmux
+      shell: make install
+      args:
+        chdir: /usr/local/src/tmux

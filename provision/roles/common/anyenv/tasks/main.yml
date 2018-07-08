@@ -1,0 +1,47 @@
+---
+- tags: roles/common/anyenv
+  block:
+    - name: install anyenv
+      git:
+        repo: https://github.com/riywo/anyenv
+        dest: ~/.anyenv # owner指定にするべき
+
+    - name: add to profile.d
+      become: true
+      copy:
+        dest: /etc/profile.d/anyenv.sh
+        content: |
+          if [ -d $HOME/.anyenv ]; then
+            export PATH="$HOME/.anyenv/bin:$PATH"
+            eval "$(anyenv init - zsh)"
+            # pyenv-virtualenv
+            if [ -d $HOME/.anyenv/envs/pyenv/plugins/pyenv-virtualenv ]; then
+              eval "$(pyenv virtualenv-init -)"
+            fi
+          fi
+
+    - name: install dependent libraries to build languages (for debian)
+      become: true
+      when: "ansible_os_family == 'Debian'"
+      with_items:
+        - build-essential
+        - libssl-dev
+        - libreadline-dev
+        - zlib1g-dev
+        - curl
+        - libbz2-dev
+        - libsqlite3-dev
+        - default-jre
+        - rlwrap
+        - m4
+      apt:
+        name: "{{item}}"
+
+    - name: setup rbenv
+      import_tasks: rbenv.yml
+      when: roles.anyenv.rbenv is defined and roles.anyenv.rbenv
+
+    - name: setup pyenv
+      import_tasks: pyenv.yml
+      when: roles.anyenv.pyenv is defined and roles.anyenv.pyenv
+

@@ -1,0 +1,5 @@
+---
+- name: ファイル共有用ユーザの作成
+  win_user:
+    name: local_file_share
+    password: "{{ global.encrypted.windows_local_main01_file_share_user_password }}"

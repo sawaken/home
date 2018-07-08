@@ -1,0 +1,7 @@
+---
+- tags: roles/common/vim
+  become: true
+  block:
+    - name: install vim from apt (for debian)
+      apt:
+        name: vim

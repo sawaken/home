@@ -1,0 +1,18 @@
+---
+- tags: roles/common/tmux
+  become: true
+  block:
+    - name: uninstall tmux installed from apt
+      when: "ansible_os_family == 'Debian'"
+      apt: name=tmux state=absent
+
+    - name: check whether tmux {{ roles.tmux.version }} is installed
+      shell: which tmux > /dev/null && [ "$(tmux -V)" = 'tmux {{ roles.tmux.version }}' ]
+      failed_when: false
+      changed_when: false
+      register: tmux_installation_check
+
+    - name: install tmux
+      when: tmux_installation_check.rc != 0
+      import_tasks: install.yml
+

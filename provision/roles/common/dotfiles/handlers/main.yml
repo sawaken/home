@@ -1,0 +1,9 @@
+---
+# rakeに依存しているが、anyenvのrakeはdotfileがdeployされないと使えないため、aptからinstallする。
+# macの場合はデフォルトでrakeが入っているので気にしなくてよい。
+- name: link dotfiles
+  include_tasks: tasks/deploy.yml
+  when: clone_dotfile.changed
+  with_items: "{{ clone_dotfiles_all.results }}"
+  loop_control:
+    loop_var: clone_dotfile
