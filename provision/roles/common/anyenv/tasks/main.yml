@@ -1,5 +1,7 @@
 ---
 - tags: roles/common/anyenv
+  become: true
+  become_user: "{{ roles.anyenv.user }}"
   block:
     - name: install anyenv
       git:

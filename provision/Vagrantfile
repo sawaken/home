@@ -12,7 +12,7 @@ Vagrant.configure(VAGRANT_CONFIGURE_VERSION) do |config|
   config.vm.define 'client-local-main01' do |machine|
     machine.vm.box = "ubuntu16.04"
     machine.vm.box_url = 'https://atlas.hashicorp.com/bento/boxes/ubuntu-16.04'
-    machine.vm.network :private_network, ip:"192.168.33.10"
+    machine.vm.network :private_network, ip:"192.168.33.101"
     machine.vm.synced_folder "../", "/var/data/home"
     machine.disksize.size = '50GB' # needs vagrant-disksize plugin
 
@@ -29,7 +29,9 @@ Vagrant.configure(VAGRANT_CONFIGURE_VERSION) do |config|
     machine.vm.provision 'ansible_local' do |ansible|
       ansible.playbook = 'playbooks/construct.yml'
       ansible.install_mode = 'pip'
-      ansible.version = '2.4.3'
+      ansible.inventory_path = 'inventory/hosts.yml'
+      ansible.version = '2.4.3.0'
+      ansible.raw_arguments = ['-c', 'local']
     end
   end
 end

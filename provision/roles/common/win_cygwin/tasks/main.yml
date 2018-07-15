@@ -1,0 +1,34 @@
+- tags: roles/common/win_cygwin
+  block:
+    - name: install cygwin
+      win_chocolatey:
+        name: cygwin
+
+    - name: make directories
+      with_items:
+        - "{{ roles.win_cygwin.home_path }}\\.mintty"
+        - "{{ roles.win_cygwin.home_path }}\\.mintty\\themes"
+        - "{{ roles.win_cygwin.home_path }}\\.ssh"
+      win_file:
+        path: "{{ item }}"
+        state: directory
+
+    - name: put solarized_dark theme
+      win_template:
+        dest: "{{ roles.win_cygwin.home_path }}\\.mintty\\themes\\solarized_dark.txt"
+        src: templates/solarized_dark.txt
+
+    - name: put .minttyrc
+      win_template:
+        dest: "{{ roles.win_cygwin.home_path }}\\.minttyrc"
+        src: templates/.minttyrc
+
+    - name: put public key
+      win_copy:
+        content: "{{ global.common.owner_public_key }}"
+        dest: "{{ roles.win_cygwin.home_path }}\\.ssh\\id_rsa.pub"
+
+    - name: put private key
+      win_copy:
+        content: "{{ global.encrypted.owner_private_key }}"
+        dest: "{{ roles.win_cygwin.home_path }}\\.ssh\\id_rsa"

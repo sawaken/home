@@ -1,24 +1,23 @@
 provision
 =========
 
-## client-local-main
+### Vagrantでclient-local-mainのVMを立てる
 ```
-# client-local-main01のVMを起動する (初回起動時はansibleも流れる)
-vagrant up client-local-main01
-# ホストマシンからclinet-local-main01にansibleだけ流したい場合
-vagrant provision client-local-main
-# client-local-main01から自分自身にansibleを流したい場合
-vagrant ssh client-local-main01
-cd /mono/provision
-ansible-playbook -i inventory/hosts.yml playbooks/construct.yml -l client-local-main01 -c local
+# client-local-main01のVMを起動する (provisionはまだ流さない)
+PS> vagrant up client-local-main01 --no-provision
+# VM内の/etc/pass/vault_pass.txtにvault-passを格納する
+PS> vagrant ssh client-local-main01 -c "sudo mkdir /etc/ansible && sudo vi /etc/ansible/vault_pass.txt"
+# VMにansibleを流す
+PS> vagrant provision client-local-main01
 ```
 
-## windows-local-main
+## client-local-mainからwindows-local-mainを構築する
 ```
-# windows-local-main01でWinRMを有効化する
+# windows-local-main01においてWinRMを有効化する
 PS> winrm quickconfig
 # client-local-main01からwindows-local-main01にansibleを流す
-ansible-playbook -i inventory/hosts.yml playbooks/construct.yml -l windows-local-main01
-# windows-local-main01からclient-local-main01にSSH接続したい場合
-ssh client-local-main01
+PS> vagrant ssh client-local-main01 -c "sudo su - owner"
+$ cd /var/data/home/provision && ansible-playbook -i inventory/hosts.yml playbooks/construct.yml -l windows-local-main01
+# windows-local-main01からowner@client-local-main01にSSH接続できるようになっているはず
+PS> ssh owner@client-local-main01
 ```

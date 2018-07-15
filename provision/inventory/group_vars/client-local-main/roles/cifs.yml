@@ -5,5 +5,5 @@ roles:
     mounts:
       - path: "/home/{{ global.common.owner_user_name }}/win_shared"
         src: \\windows-local-main01\shared
-        uid: 1000
-        gid: 1000
+        gid: "{{ global.common.owner_gid }}"
+        uid: "{{ global.common.owner_uid }}"

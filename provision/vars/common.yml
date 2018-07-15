@@ -1,4 +1,8 @@
 global:
   common:
     owner_user_name: owner
+    owner_uid: 1001
+    owner_gid: 1002
+    owner_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDn22K0aFmNGN/Sec9FUYB0iap//FZ2f5yoUFYUYLzVMprMVz1b0M5arYOfRREi3DoX1i2i10FAtAU4TYXEROTYhkQtGyyRnbbIfDid5oD9oYcj+g5dRbTMYRsn81pmfPAZo1flwgezqPbDxOiXonjnsIrsyKOPQa2HwjTcgV+Y/L/G2Ih0z22zRTfOum2f/5scpqB0hQczUC1WjW90txt7q7pYuCvpy1Gq9Gf4OOP6X6EjpiS1ykZMR2erjX3oO1vr1NRW35YsQ6tEmAbZo5cdmh3eI0XxA55tvyN15cPlT76SVvWZa0IhbFK339n6NDUnTMmW2DM/5kQeedtSGmG3
     win_local_file_share_uesr_name: local_file_share
+

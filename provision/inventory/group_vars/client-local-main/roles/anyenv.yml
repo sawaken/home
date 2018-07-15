@@ -1,5 +1,6 @@
 roles:
   anyenv:
+    user: "{{ global.common.owner_user_name }}"
     rbenv:
       global_version: 2.3.6
       versions:

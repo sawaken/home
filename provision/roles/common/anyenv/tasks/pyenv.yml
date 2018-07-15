@@ -2,7 +2,7 @@
 - tags: roles/anyenv/pyenv
   block:
     - name: install pyenv
-      shell: anyenv install pyenv
+      shell: "bash -lc 'anyenv install pyenv'"
       args:
         creates: ~/.anyenv/envs/pyenv
 
@@ -32,10 +32,10 @@
       changed_when: pyenv_current_global_version_v2.stdout != roles.anyenv.pyenv.global_version_v2 or pyenv_current_global_version_v3.stdout != roles.anyenv.pyenv.global_version_v3
       notify: pyenv rehash
 
-    - name: install virtualenv
-      easy_install:
-        name: virtualenv
-        executable: ~/.anyenv/envs/pyenv/shims/easy_install
+    #- name: install virtualenv
+    #  easy_install:
+    #    name: virtualenv
+    #    executable: ~/.anyenv/envs/pyenv/shims/easy_install
 
     - name: install pyenv-virtualenv
       git:

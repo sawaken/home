@@ -3,3 +3,19 @@
   win_user:
     name: local_file_share
     password: "{{ global.encrypted.windows_local_main01_file_share_user_password }}"
+
+- name: Ansible管理ファイルを置くディレクトリを作成
+  with_items:
+    - C:\ansible_managed
+    - C:\ansible_managed\bin
+    - C:\ansible_managed\src
+    - C:\ansible_managed\scripts
+  win_file:
+    path: "{{ item }}"
+    state: directory
+
+- name: put startup programs
+  with_items: []
+  win_shortcut:
+    dest: 'C:\Users\Owner\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\{{ item | basename }}.lnk'
+    src: "{{ item }}"

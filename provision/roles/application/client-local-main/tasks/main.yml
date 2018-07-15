@@ -2,6 +2,16 @@
 - tags: roles/application/client-local-main
   become: true
   block:
+    - name: create owner group
+      group:
+        name: "{{ global.common.owner_user_name }}"
+        gid: "{{ global.common.owner_gid }}"
+
+    - name: create owner user
+      user:
+        name: "{{ global.common.owner_user_name }}"
+        uid: "{{ global.common.owner_uid }}"
+
     - name: set timezone to Asia/Tokyo
       timezone:
         name: Asia/Tokyo
@@ -14,3 +24,25 @@
       template:
         src: templates/vault_pass.txt.j2
         dest: /etc/ansible/vault_pass.txt
+
+    - name: set owner
+      block:
+        - name: put authorized_keys
+          authorized_key:
+            user: "{{ global.common.owner_user_name }}"
+            key: https://github.com/sawaken.keys
+
+        - name: put public key
+          copy:
+            owner: "{{ global.common.owner_user_name }}"
+            group: "{{ global.common.owner_user_name }}"
+            content: "{{ global.common.owner_public_key }}"
+            dest: "/home/{{ global.common.owner_user_name }}/.ssh/id_rsa.pub"
+
+        - name: put private key
+          copy:
+            mode: 0600
+            owner: "{{ global.common.owner_user_name }}"
+            group: "{{ global.common.owner_user_name }}"
+            content: "{{ global.encrypted.owner_private_key }}"
+            dest: "/home/{{ global.common.owner_user_name }}/.ssh/id_rsa"

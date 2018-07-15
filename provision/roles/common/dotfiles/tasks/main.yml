@@ -3,12 +3,10 @@
   block:
     - name: clone dotfiles
       become: true
-      become_user: "{{ item.user_name }}"
-      become_method: su
-      with_items: "{{ roles.dotfiles }}"
+      become_user: "{{ roles.dotfiles.user_name }}"
       notify: link dotfiles
       register: clone_dotfiles_all
       git:
-        repo: "{{ item.repository }}"
-        dest: "{{ item.dest }}"
+        repo: "{{ roles.dotfiles.repository }}"
+        dest: "{{ roles.dotfiles.dest }}"
         update: yes

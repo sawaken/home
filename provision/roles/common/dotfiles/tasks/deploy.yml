@@ -1,17 +1,22 @@
-- package:
+- name: install rake temporary
+  become: true
+  become_user: root
+  package:
     name: rake
     state: present
-  become: true
 
-- shell: "rake {{ item }}"
+- name: run rake tasks
   become: true
-  become_user: "{{ clone_dotfile.item.user_name }}"
+  become_user: "{{ roles.dotfiles.user_name }}"
+  shell: "rake {{ item }}"
   args:
-    chdir: "{{ clone_dotfile.item.dest }}"
-  with_items: "{{ clone_dotfile.item.rake_tasks }}"
+    chdir: "{{ roles.dotfiles.dest }}"
+  with_items: "{{ roles.dotfiles.rake_tasks }}"
 
-- package:
+- name: remove rake
+  become: true
+  become_user: root
+  package:
     name: rake
     state: absent
-  become: true
 
